@@ -29,6 +29,10 @@ public class ABFAndAFB<T extends Pattern> {
 
 	private Alternating firstTechnique;
 	private int DHFRuns, DHBRuns;
+	/**
+	 * holds the sub of the DHF & DHB frequencies
+	 */
+	private int subRunSize;
 
 	/**
 	 * 
@@ -55,6 +59,7 @@ public class ABFAndAFB<T extends Pattern> {
 		this.firstTechnique = first;
 		this.DHBRuns = DHBRuns;
 		this.DHFRuns = DHFRuns;
+		subRunSize = DHBRuns + DHBRuns;
 	}
 
 	public void setPatternUtils(KMeansUtils<T> utils) {
@@ -131,8 +136,12 @@ public class ABFAndAFB<T extends Pattern> {
 	 * @return true if the assignment changed
 	 */
 	public boolean iterate(int iterationNumber) {
-		if (iterationNumber % 2 != 0) {
-			// odd
+		int subRunId = iterationNumber % (subRunSize);
+		if (subRunId == 0)
+			subRunId = subRunSize;
+		int firstRuns = (firstTechnique == Alternating.DHB) ? DHBRuns : DHFRuns;
+		if (subRunId <= firstRuns) {
+			// run first
 			switch (firstTechnique) {
 			case DHB:
 				return doDHBIteration();
@@ -141,7 +150,7 @@ public class ABFAndAFB<T extends Pattern> {
 
 			}
 		} else {
-			// even
+			// run second
 			switch (firstTechnique) {
 			case DHF:
 				return doDHBIteration();
@@ -149,6 +158,7 @@ public class ABFAndAFB<T extends Pattern> {
 				return doDHFIteration();
 			}
 		}
+
 		return false;
 	}
 
