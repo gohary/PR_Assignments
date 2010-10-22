@@ -10,6 +10,7 @@ public class MainFrame extends JFrame {
 		this.setSize(850, 600);
 		setTitle("KMeans Clustering Assignment");
 		setContentPane(new MainPanel());
+		pack();
 		RefineryUtilities.centerFrameOnScreen(this);
 		this.setVisible(true);
 	}

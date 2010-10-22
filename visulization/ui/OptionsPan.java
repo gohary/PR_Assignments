@@ -1,5 +1,6 @@
 package ui;
 
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 
 import javax.swing.JButton;
@@ -7,6 +8,8 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+
+import controller.PlotActionListener;
 
 public class OptionsPan extends JPanel {
 
@@ -19,7 +22,7 @@ public class OptionsPan extends JPanel {
 	private JComboBox dataSetComboF;
 	private JButton runButton;
 
-	public OptionsPan() {
+	public OptionsPan(PlotActionListener controller) {
 
 		setLayout(new FlowLayout(FlowLayout.CENTER));
 		add(new JLabel("Num Clusters"));
@@ -45,5 +48,32 @@ public class OptionsPan extends JPanel {
 		add(dataSetComboF);
 		runButton = new JButton("Run");
 		add(runButton);
+		runButton.addActionListener(controller);
+		controller.setOptionsPan(this);
+		this.setPreferredSize(new Dimension(850, 30));
+	}
+
+	public int getNumClusters() {
+		return Integer.parseInt(this.numClustersF.getText());
+	}
+
+	public int getDHBRuns() {
+		return Integer.parseInt(this.DHBRunsF.getText());
+	}
+
+	public int getDHFRuns() {
+		return Integer.parseInt(this.DHFRunsF.getText());
+	}
+
+	/**
+	 * 
+	 * @return 0 none, 1 British Towns, 2 German Towns
+	 */
+	public int getDataSet() {
+		return this.dataSetComboF.getSelectedIndex();
+	}
+
+	public int getNumRuns() {
+		return Integer.parseInt(this.numberOfRunsF.getText());
 	}
 }
