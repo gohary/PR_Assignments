@@ -59,7 +59,7 @@ public class ABFAndAFB<T extends Pattern> {
 		this.firstTechnique = first;
 		this.DHBRuns = DHBRuns;
 		this.DHFRuns = DHFRuns;
-		subRunSize = DHBRuns + DHBRuns;
+		subRunSize = DHBRuns + DHFRuns;
 	}
 
 	public void setPatternUtils(KMeansUtils<T> utils) {

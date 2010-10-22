@@ -1,6 +1,7 @@
 package testing;
 
 import java.io.FileNotFoundException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -18,7 +19,8 @@ public class ConsoleTestNormalKmeans {
 		BritishTownsLoader loader = new BritishTownsLoader();
 		loader.load();
 
-		List<FourDPoint> patterns = loader.getPatterns();
+		List<FourDPoint> patterns = Arrays.asList(loader.getPatterns()
+				.toArray(new FourDPoint[] {})); 
 
 		int numClusters = loader.getNumOfClusters();
 

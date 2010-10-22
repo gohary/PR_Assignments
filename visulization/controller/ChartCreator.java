@@ -31,7 +31,7 @@ public class ChartCreator {
 
 	public JFreeChart createChart(int numClusters, int DHFRuns, int DHBRuns,
 			int dataSet, int numRuns) {
-
+		
 		List<Pattern> patterns = null;
 		switch (dataSet) {
 		case 1:
