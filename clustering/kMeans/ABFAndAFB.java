@@ -163,13 +163,14 @@ public class ABFAndAFB<T extends Pattern> {
 	}
 
 	private boolean doDHFIteration() {
-
+		//System.out.println("FFFFFFF");
 		boolean assignmnetChanged = false;
 		int i = 0;
 		for (T pattern : patterns) {
 			int currentCluster = patternClusterMap.get(i);
 			int currentClusterSize = clusters.get(currentCluster).size();
 			if (currentClusterSize == 1) {
+				i++;
 				continue;
 			}
 
@@ -203,12 +204,14 @@ public class ABFAndAFB<T extends Pattern> {
 	}
 
 	private boolean doDHBIteration() {
+		//System.out.println("BBBBBBBBBBBBB");
 		boolean assignmnetChanged = false;
 		int i = 0;
 		for (T pattern : patterns) {
 			int currentCluster = patternClusterMap.get(i);
 			int currentClusterSize = clusters.get(currentCluster).size();
 			if (currentClusterSize == 1) {
+				i++;
 				continue;
 			}
 

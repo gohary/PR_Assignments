@@ -16,8 +16,10 @@ public class FourDPointUtils extends KMeansUtils<FourDPoint> {
 			centerDs[3] += p.getD4();
 		}
 		int length = patterns.size();
-		return new FourDPoint(centerDs[0] / length, centerDs[1] / length,
-				centerDs[2] / length, centerDs[3] / length);
+		FourDPoint center = new FourDPoint(centerDs[0] / length, centerDs[1]
+				/ length, centerDs[2] / length, centerDs[3] / length);
+
+		return center;
 	}
 
 	@Override
@@ -30,6 +32,7 @@ public class FourDPointUtils extends KMeansUtils<FourDPoint> {
 		float[] p2Ds = p2.toArray();
 		for (int i = 0; i < 4; i++)
 			distanceSquare += (p1Ds[i] - p2Ds[i]) * (p1Ds[i] - p2Ds[i]);
+
 		return distanceSquare;
 	}
 

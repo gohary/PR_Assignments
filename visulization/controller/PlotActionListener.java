@@ -3,8 +3,6 @@ package controller;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.JButton;
-
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 
@@ -33,18 +31,13 @@ public class PlotActionListener implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent action) {
 
-		
-		
 		JFreeChart chart = chartCreator.createChart(
 				optionsPan.getNumClusters(), optionsPan.getDHFRuns(),
 				optionsPan.getDHBRuns(), optionsPan.getDataSet(),
 				optionsPan.getNumRuns());
-		
-				
+
 		final ChartPanel panel = new ChartPanel(chart, true, true, true, false,
 				true);
-
-		panel.setPreferredSize(new java.awt.Dimension(500, 270));
 
 		charPainter.showChart(panel);
 

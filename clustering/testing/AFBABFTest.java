@@ -17,20 +17,25 @@ public class AFBABFTest {
 		BritishTownsLoader loader = new BritishTownsLoader();
 		loader.load();
 
-		List<FourDPoint> patterns = Arrays.asList(loader.getPatterns()
-				.toArray(new FourDPoint[] {})); 
-			
-			
+		List<FourDPoint> patterns = Arrays.asList(loader.getPatterns().toArray(
+				new FourDPoint[] {}));
 
 		int numClusters = loader.getNumOfClusters();
 
 		ABFAndAFB<FourDPoint> abf = new ABFAndAFB<FourDPoint>(
-				ABFAndAFB.Alternating.DHF);
+				ABFAndAFB.Alternating.DHF, 1, 1);
 		abf.setPatternUtils(new FourDPointUtils());
 		List<Set<Integer>> rs = abf.cluster(patterns, numClusters);
-
+		System.out.println("Obj: "+new FourDPointUtils().calculateObjectiveFunction(
+				patterns, rs, abf.getCenters()));
+		int k = 1;
 		for (Set<Integer> cluster : rs) {
-			System.out.println(cluster.size());
+			System.out.println("---------------------------------------");
+			for (int i : cluster) {
+				System.out.print(i + ", ");
+			}
+
+			k++;
 		}
 	}
 

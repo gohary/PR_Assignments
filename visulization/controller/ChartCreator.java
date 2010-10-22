@@ -31,7 +31,7 @@ public class ChartCreator {
 
 	public JFreeChart createChart(int numClusters, int DHFRuns, int DHBRuns,
 			int dataSet, int numRuns) {
-		
+
 		List<Pattern> patterns = null;
 		switch (dataSet) {
 		case 1:
@@ -167,6 +167,16 @@ public class ChartCreator {
 				List<FourDPoint> centers = abfAndAFB.getCenters();
 				float objectiveFundtion = utils.calculateObjectiveFunction(
 						britishTowns, result, centers);
+
+				if (objectiveFundtion > 270) {
+					for (Set<Integer> cluster : result) {
+						System.out.println("-------------------------");
+						for (int j : cluster) {
+							System.out.print(j + ", ");
+						}
+
+					}
+				}
 				abf.add(i, objectiveFundtion);
 
 			}

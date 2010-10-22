@@ -35,7 +35,6 @@ public class NormalKmeans<T extends Pattern> {
 
 		do {
 			recalculateCenters();
-
 		} while (assignPatternsToClusters());
 
 		return clusters;
@@ -94,8 +93,11 @@ public class NormalKmeans<T extends Pattern> {
 		int i = 0;
 		for (T pattern : patterns) {
 			int nearestCenter = getNearestCenter(pattern);
-			assignmentChanged = clusters.get(nearestCenter).add(i);
-			if (assignmentChanged) {
+
+			if (clusters.get(nearestCenter).add(i)) {
+				if (!assignmentChanged) {
+					assignmentChanged = true;
+				}
 				// removing from the previous cluster
 				Integer clusterId = patternClusterMap.get(i);
 				if (clusterId != null) {
