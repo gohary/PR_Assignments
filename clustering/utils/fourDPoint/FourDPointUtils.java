@@ -27,7 +27,7 @@ public class FourDPointUtils extends KMeansUtils<FourDPoint> {
 	public float getDistanceSquare(FourDPoint p1, FourDPoint p2) {
 		float distanceSquare = 0;
 		float[] p1Ds = p1.toArray();
-		float[] p2Ds = p1.toArray();
+		float[] p2Ds = p2.toArray();
 		for (int i = 0; i < 4; i++)
 			distanceSquare += (p1Ds[i] - p2Ds[i]) * (p1Ds[i] - p2Ds[i]);
 		return distanceSquare;

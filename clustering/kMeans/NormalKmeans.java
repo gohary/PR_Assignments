@@ -59,10 +59,13 @@ public class NormalKmeans<T extends Pattern> {
 			int randCenter = -1;
 			while (rands.contains(randCenter)) {
 				randCenter = randGen.nextInt(numPatterns);
+
 			}
+			
 			rands.add(randCenter);
 			centers.add(patterns.get(randCenter));
 		}
+
 		assignPatternsToClusters();
 	}
 
@@ -114,12 +117,14 @@ public class NormalKmeans<T extends Pattern> {
 		int i = 0;
 		for (T center : centers) {
 			float distance = utils.getDistanceSquare(center, pattern);
+			
 			if (distance < minDistance) {
 				minDistance = distance;
 				minCenter = i;
 			}
 			i++;
 		}
+		
 		return minCenter;
 	}
 
