@@ -1,9 +1,15 @@
 package controller;
 
-import java.awt.Font;
+import java.io.FileNotFoundException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
+
+import kMeans.ABFAndAFB;
+import kMeans.ABFAndAFB.Alternating;
+import kMeans.NormalKmeans;
 
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.annotations.XYTextAnnotation;
 import org.jfree.chart.axis.AxisLocation;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.CombinedDomainXYPlot;
@@ -15,55 +21,61 @@ import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
+import utils.Pattern;
+import utils.fourDPoint.FourDPoint;
+import utils.fourDPoint.FourDPointUtils;
+import dataPrepration.BritishTownsLoader;
+import dataPrepration.GermanTownsLoader;
+
 public class ChartCreator {
 
 	public JFreeChart createChart(int numClusters, int DHFRuns, int DHBRuns,
 			int dataSet, int numRuns) {
 
-		return createCombinedChart();
-	}
+		List<Pattern> patterns = null;
+		switch (dataSet) {
+		case 1:
+			// British Towns
+			BritishTownsLoader britishLoader = new BritishTownsLoader();
+			try {
+				britishLoader.load();
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+				return null;
+			}
+			patterns = britishLoader.getPatterns();
+			break;
+		case 2:
+			// German Towns
 
-	private JFreeChart createCombinedChart() {
+			GermanTownsLoader germanLoader = new GermanTownsLoader();
+			try {
+				germanLoader.load();
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+				return null;
+			}
+			patterns = germanLoader.getPatterns();
+			break;
+		default:
+			return null;
+		}
 
-		// create subplot 1…
-
-		final XYDataset data1 = createDataset1();
+		final XYDataset data = createDataset(numClusters, DHFRuns, DHBRuns,
+				patterns, numRuns, dataSet);
 
 		final XYItemRenderer renderer1 = new StandardXYItemRenderer();
 
-		final NumberAxis rangeAxis1 = new NumberAxis("Range 1");
+		final NumberAxis rangeAxis1 = new NumberAxis("Objective Function");
 
-		final XYPlot subplot1 = new XYPlot(data1, null, rangeAxis1, renderer1);
+		final XYPlot subplot1 = new XYPlot(data, null, rangeAxis1, renderer1);
 
 		subplot1.setRangeAxisLocation(AxisLocation.BOTTOM_OR_LEFT);
-
-		final XYTextAnnotation annotation = new XYTextAnnotation("Hello!",
-				50.0, 10000.0);
-
-		annotation.setFont(new Font("SansSerif", Font.PLAIN, 9));
-
-		annotation.setRotationAngle(Math.PI / 4.0);
-
-		subplot1.addAnnotation(annotation);
-
-		// create subplot 2…
-
-		final XYDataset data2 = createDataset2();
-
-		final XYItemRenderer renderer2 = new StandardXYItemRenderer();
-
-		final NumberAxis rangeAxis2 = new NumberAxis("Range 2");
-
-		rangeAxis2.setAutoRangeIncludesZero(false);
-
-		final XYPlot subplot2 = new XYPlot(data2, null, rangeAxis2, renderer2);
-
-		subplot2.setRangeAxisLocation(AxisLocation.TOP_OR_LEFT);
 
 		// parent plot…
 
 		final CombinedDomainXYPlot plot = new CombinedDomainXYPlot(
-				new NumberAxis("Domain"));
+				new NumberAxis("Run Number"));
 
 		plot.setGap(10.0);
 
@@ -71,13 +83,13 @@ public class ChartCreator {
 
 		plot.add(subplot1, 1);
 
-		plot.add(subplot2, 1);
-
 		plot.setOrientation(PlotOrientation.VERTICAL);
 
 		// return a new chart containing the overlaid plot…
 
-		return new JFreeChart("CombinedDomainXYPlot Demo",
+		String title = ((dataSet == 1) ? "British Towns " : "German Towns ")
+				+ numClusters + " Clusters";
+		return new JFreeChart(title,
 
 		JFreeChart.DEFAULT_TITLE_FONT, plot, true);
 
@@ -92,129 +104,75 @@ public class ChartCreator {
 	 * @return Series 1.
 	 */
 
-	private XYDataset createDataset1() {
-
-		// create dataset 1…
-
-		final XYSeries series1 = new XYSeries("Series 1");
-
-		series1.add(10.0, 12353.3);
-
-		series1.add(20.0, 13734.4);
-
-		series1.add(30.0, 14525.3);
-
-		series1.add(40.0, 13984.3);
-
-		series1.add(50.0, 12999.4);
-
-		series1.add(60.0, 14274.3);
-
-		series1.add(70.0, 15943.5);
-
-		series1.add(80.0, 14845.3);
-
-		series1.add(90.0, 14645.4);
-
-		series1.add(100.0, 16234.6);
-
-		series1.add(110.0, 17232.3);
-
-		series1.add(120.0, 14232.2);
-
-		series1.add(130.0, 13102.2);
-
-		series1.add(140.0, 14230.2);
-
-		series1.add(150.0, 11235.2);
-
-		final XYSeries series2 = new XYSeries("Series 2");
-
-		series2.add(10.0, 15000.3);
-
-		series2.add(20.0, 11000.4);
-
-		series2.add(30.0, 17000.3);
-
-		series2.add(40.0, 15000.3);
-
-		series2.add(50.0, 14000.4);
-
-		series2.add(60.0, 12000.3);
-
-		series2.add(70.0, 11000.5);
-
-		series2.add(80.0, 12000.3);
-
-		series2.add(90.0, 13000.4);
-
-		series2.add(100.0, 12000.6);
-
-		series2.add(110.0, 13000.3);
-
-		series2.add(120.0, 17000.2);
-
-		series2.add(130.0, 18000.2);
-
-		series2.add(140.0, 16000.2);
-
-		series2.add(150.0, 17000.2);
+	private XYDataset createDataset(int numClusters, int DHFRuns, int DHBRuns,
+			List<Pattern> patterns, int numRuns, int dataSet) {
 
 		final XYSeriesCollection collection = new XYSeriesCollection();
 
-		collection.addSeries(series1);
+		collection.addSeries(createKmeansDateSet(numClusters, patterns,
+				numRuns, dataSet));
 
-		collection.addSeries(series2);
+		collection.addSeries(createAFBABFDateSet(true, numClusters, DHFRuns,
+				DHBRuns, patterns, numRuns, dataSet));
+
+		collection.addSeries(createAFBABFDateSet(false, numClusters, DHFRuns,
+				DHBRuns, patterns, numRuns, dataSet));
 
 		return collection;
 
 	}
 
-	/**
-	 * 
-	 * Creates a sample dataset.
-	 * 
-	 * 
-	 * 
-	 * @return Series 2.
-	 */
+	private XYSeries createKmeansDateSet(int numClusters,
+			List<Pattern> patterns, int numRuns, int dataSet) {
+		final XYSeries kmeansResults = new XYSeries("KMeans");
 
-	private XYDataset createDataset2() {
+		if (dataSet == 1) {
+			NormalKmeans<FourDPoint> kmeans = new NormalKmeans<FourDPoint>();
+			List<FourDPoint> britishTowns = Arrays.asList(patterns
+					.toArray(new FourDPoint[] {}));
+			FourDPointUtils utils = new FourDPointUtils();
+			kmeans.setPatternUtils(utils);
+			for (int i = 1; i <= numRuns; i++) {
 
-		// create dataset 2…
+				List<Set<Integer>> result = kmeans.cluster(britishTowns,
+						numClusters);
+				List<FourDPoint> centers = kmeans.getCenters();
+				float objectiveFundtion = utils.calculateObjectiveFunction(
+						britishTowns, result, centers);
+				kmeansResults.add(i, objectiveFundtion);
 
-		final XYSeries series2 = new XYSeries("Series 3");
+			}
+		}
 
-		series2.add(10.0, 16853.2);
+		return kmeansResults;
+	}
 
-		series2.add(20.0, 19642.3);
+	private XYSeries createAFBABFDateSet(boolean isAFB, int numClusters,
+			int DHFRuns, int DHBRuns, List<Pattern> patterns, int numRuns,
+			int dataSet) {
+		final XYSeries abf = new XYSeries((isAFB) ? "AFB" : "ABF");
+		if (dataSet == 1) {
+			ABFAndAFB<FourDPoint> abfAndAFB = new ABFAndAFB<FourDPoint>(
+					(isAFB) ? Alternating.DHF : Alternating.DHB, DHFRuns,
+					DHBRuns);
 
-		series2.add(30.0, 18253.5);
+			List<FourDPoint> britishTowns = Arrays.asList(patterns
+					.toArray(new FourDPoint[] {}));
+			FourDPointUtils utils = new FourDPointUtils();
+			abfAndAFB.setPatternUtils(utils);
+			for (int i = 1; i <= numRuns; i++) {
 
-		series2.add(40.0, 15352.3);
+				List<Set<Integer>> result = abfAndAFB.cluster(britishTowns,
+						numClusters);
+				List<FourDPoint> centers = abfAndAFB.getCenters();
+				float objectiveFundtion = utils.calculateObjectiveFunction(
+						britishTowns, result, centers);
+				abf.add(i, objectiveFundtion);
 
-		series2.add(50.0, 13532.0);
+			}
+		}
 
-		series2.add(100.0, 12635.3);
-
-		series2.add(110.0, 13998.2);
-
-		series2.add(120.0, 11943.2);
-
-		series2.add(130.0, 16943.9);
-
-		series2.add(140.0, 17843.2);
-
-		series2.add(150.0, 16495.3);
-
-		series2.add(160.0, 17943.6);
-
-		series2.add(170.0, 18500.7);
-
-		series2.add(180.0, 19595.9);
-
-		return new XYSeriesCollection(series2);
-
+		return abf;
 	}
 
 }

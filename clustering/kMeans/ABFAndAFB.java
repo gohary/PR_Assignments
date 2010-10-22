@@ -277,4 +277,8 @@ public class ABFAndAFB<T extends Pattern> {
 		return patts;
 	}
 
+	public List<T> getCenters() {
+		return this.centers;
+	}
+
 }

@@ -45,6 +45,7 @@ public class PlotActionListener implements ActionListener {
 		panel.setPreferredSize(new java.awt.Dimension(500, 270));
 
 		charPainter.showChart(panel);
+
 	}
 
 }

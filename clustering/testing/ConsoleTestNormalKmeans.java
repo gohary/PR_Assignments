@@ -23,8 +23,13 @@ public class ConsoleTestNormalKmeans {
 		int numClusters = loader.getNumOfClusters();
 
 		NormalKmeans<FourDPoint> normalKmeans = new NormalKmeans<FourDPoint>();
-		normalKmeans.setPatternUtils(new FourDPointUtils());
+		FourDPointUtils utils = new FourDPointUtils();
+		normalKmeans.setPatternUtils(utils);
 		List<Set<Integer>> rs = normalKmeans.cluster(patterns, numClusters);
+		List<FourDPoint> centers = normalKmeans.getCenters();
+
+		System.out.println("Obj: "+utils.calculateObjectiveFunction(patterns, rs,
+				centers));
 
 		for (Set<Integer> cluster : rs) {
 			System.out.println(cluster.size());
