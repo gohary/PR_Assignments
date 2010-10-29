@@ -1,5 +1,9 @@
 package utils;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
 public abstract class PatternUtils<T extends Pattern> {
 
 	/**
@@ -17,6 +21,14 @@ public abstract class PatternUtils<T extends Pattern> {
 
 	public float getSimilarity(T p1, T p2) {
 		return 1 - getDistance(p1, p2);
+	}
+
+	public List<T> getPatterns(Set<Integer> cluster, List<T> patterns) {
+		List<T> patts = new ArrayList<T>();
+		for (int i : cluster) {
+			patts.add(patterns.get(i));
+		}
+		return patts;
 	}
 
 }

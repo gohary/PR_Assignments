@@ -21,7 +21,7 @@ public class BritishTownsLoader {
 	private List<Pattern> patterns;
 	private int numPatterns;
 
-	public void load() throws FileNotFoundException {
+	public List<Pattern> load() throws FileNotFoundException {
 		Scanner sc = new Scanner(new File("data/BritishTowns.txt"));
 		numCluster = sc.nextInt();
 		numPatterns = sc.nextInt();
@@ -33,6 +33,7 @@ public class BritishTownsLoader {
 			patternsCount++;
 		}
 		sc.close();
+		return this.patterns;
 	}
 
 	public int getNumOfClusters() {
@@ -44,6 +45,17 @@ public class BritishTownsLoader {
 	}
 
 	public int getNumPatterns() {
+
 		return this.numPatterns;
+	}
+
+	public static void main(String[] args) throws FileNotFoundException {
+		BritishTownsLoader l = new BritishTownsLoader();
+		l.load();
+		for (Pattern p : l.getPatterns()) {
+			System.out.println(((FourDPoint) p).getD1() + " "
+					+ ((FourDPoint) p).getD2() + " " + ((FourDPoint) p).getD3()
+					+ " " + ((FourDPoint) p).getD4() + " ");
+		}
 	}
 }

@@ -1,0 +1,11 @@
+<<<<<<< .mine
+Dataset = dat/half-rings.txt
+ClusteringAlgorithm = KM
+Eps = 300
+minPts = 4
+K = 2=======
+Dataset = dat/half-rings-all.txt
+ClusteringAlgorithm = SL
+Eps = 700
+minPts = 3
+K = 3>>>>>>> .r13

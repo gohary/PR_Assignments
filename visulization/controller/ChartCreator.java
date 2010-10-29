@@ -107,7 +107,7 @@ public class ChartCreator {
 	private XYDataset createDataset(int numClusters, int DHFRuns, int DHBRuns,
 			List<Pattern> patterns, int numRuns, int dataSet) {
 
-		final XYSeriesCollection collection = new XYSeriesCollection();
+		XYSeriesCollection collection = new XYSeriesCollection();
 
 		collection.addSeries(createKmeansDateSet(numClusters, patterns,
 				numRuns, dataSet));
@@ -124,9 +124,9 @@ public class ChartCreator {
 
 	private XYSeries createKmeansDateSet(int numClusters,
 			List<Pattern> patterns, int numRuns, int dataSet) {
-		final XYSeries kmeansResults = new XYSeries("KMeans");
+		XYSeries kmeansResults = new XYSeries("KMeans");
 
-		if (dataSet == 1) {
+		if (dataSet == 1 || dataSet == 2) {
 			NormalKmeans<FourDPoint> kmeans = new NormalKmeans<FourDPoint>();
 			List<FourDPoint> britishTowns = Arrays.asList(patterns
 					.toArray(new FourDPoint[] {}));
@@ -150,8 +150,8 @@ public class ChartCreator {
 	private XYSeries createAFBABFDateSet(boolean isAFB, int numClusters,
 			int DHFRuns, int DHBRuns, List<Pattern> patterns, int numRuns,
 			int dataSet) {
-		final XYSeries abf = new XYSeries((isAFB) ? "AFB" : "ABF");
-		if (dataSet == 1) {
+		XYSeries abf = new XYSeries((isAFB) ? "AFB" : "ABF");
+		if (dataSet == 1 || dataSet == 2) {
 			ABFAndAFB<FourDPoint> abfAndAFB = new ABFAndAFB<FourDPoint>(
 					(isAFB) ? Alternating.DHF : Alternating.DHB, DHFRuns,
 					DHBRuns);
@@ -168,15 +168,16 @@ public class ChartCreator {
 				float objectiveFundtion = utils.calculateObjectiveFunction(
 						britishTowns, result, centers);
 
-				if (objectiveFundtion > 270) {
-					for (Set<Integer> cluster : result) {
-						System.out.println("-------------------------");
-						for (int j : cluster) {
-							System.out.print(j + ", ");
-						}
-
-					}
-				}
+				// if (objectiveFundtion > 270) {
+				// for (Set<Integer> cluster : result) {
+				// System.out.println("-------------------------");
+				// for (int j : cluster) {
+				// System.out.print(j + ", ");
+				// }
+				//
+				// }
+				// }
+				//
 				abf.add(i, objectiveFundtion);
 
 			}

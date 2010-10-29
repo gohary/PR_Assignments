@@ -56,8 +56,8 @@ public class FourDPoint extends Pattern {
 	public void setArray(float[] ds) {
 		d1 = ds[0];
 		d2 = ds[1];
-		d3 = ds[3];
-		d4 = ds[4];
+		d3 = ds[2];
+		d4 = ds[3];
 	}
 
 }

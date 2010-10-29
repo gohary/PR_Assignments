@@ -1,0 +1,5 @@
+Dataset = dat/half-rings-all.txt
+ClusteringAlgorithm = AFB
+Eps = 700
+minPts = 3
+K = 4

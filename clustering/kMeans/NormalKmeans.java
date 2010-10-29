@@ -1,77 +1,29 @@
 package kMeans;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Random;
 import java.util.Set;
 
 import utils.Pattern;
 import utils.algorithms.KMeansUtils;
 
-public class NormalKmeans<T extends Pattern> {
+public class NormalKmeans<T extends Pattern> extends KMeansTypeAlgorithm<T> {
 
-	private KMeansUtils<T> utils;
-	private List<T> patterns;
-	private List<Set<Integer>> clusters;
-	private int numClusters;
-
-	// maintained in a list to be able to use a generic type T
-	private List<T> centers;
-	private int numPatterns;
-	private Map<Integer, Integer> patternClusterMap;
-
-	public void setPatternUtils(KMeansUtils<T> utils) {
-		this.utils = utils;
+	public NormalKmeans(int numClusters, List<T> patterns, KMeansUtils<T> utils) {
+		super(numClusters, patterns, utils);
 	}
 
-	public List<Set<Integer>> cluster(List<T> patterns, int numClusters) {
-		this.patterns = patterns;
-		this.numClusters = numClusters;
-		numPatterns = patterns.size();
-		initClusters();
-
-		do {
+	public void cluster() {
+		while (assignPatternsToClusters()) {
 			recalculateCenters();
-		} while (assignPatternsToClusters());
-
-		return clusters;
-	}
-
-	/**
-	 * Two runs within the same millisecond will have the same sequence of
-	 * random numbers.
-	 */
-	private void initClusters() {
-		// randomly select the centers
-		clusters = new ArrayList<Set<Integer>>();
-		centers = new ArrayList<T>();
-		patternClusterMap = new HashMap<Integer, Integer>();
-		HashSet<Integer> rands = new HashSet<Integer>();
-		rands.add(-1);
-		Random randGen = new Random();
-		for (int i = 0; i < numClusters; i++) {
-			clusters.add(new HashSet<Integer>());
-
-			int randCenter = -1;
-			while (rands.contains(randCenter)) {
-				randCenter = randGen.nextInt(numPatterns);
-
-			}
-
-			rands.add(randCenter);
-			centers.add(patterns.get(randCenter));
 		}
-
-		assignPatternsToClusters();
 	}
 
 	private void recalculateCenters() {
 		int i = 0;
 		for (Set<Integer> cluster : clusters) {
-			centers.set(i, utils.getCenter(getPatterns(cluster)));
+			T cen = utils.getCenter(getPatterns(cluster));
+			centers.set(i, cen);
 			i++;
 		}
 	}
@@ -93,7 +45,6 @@ public class NormalKmeans<T extends Pattern> {
 		int i = 0;
 		for (T pattern : patterns) {
 			int nearestCenter = getNearestCenter(pattern);
-
 			if (clusters.get(nearestCenter).add(i)) {
 				if (!assignmentChanged) {
 					assignmentChanged = true;
@@ -101,11 +52,12 @@ public class NormalKmeans<T extends Pattern> {
 				// removing from the previous cluster
 				Integer clusterId = patternClusterMap.get(i);
 				if (clusterId != null) {
-					clusters.get(clusterId).remove(i);
+					if (!clusters.get(clusterId).remove(i)) {
+						System.err.println("err");
+					}
 				}
 
 				patternClusterMap.put(i, nearestCenter);
-
 			}
 
 			i++;
@@ -119,19 +71,13 @@ public class NormalKmeans<T extends Pattern> {
 		int i = 0;
 		for (T center : centers) {
 			float distance = utils.getDistanceSquare(center, pattern);
-
 			if (distance < minDistance) {
 				minDistance = distance;
 				minCenter = i;
 			}
 			i++;
 		}
-
 		return minCenter;
-	}
-
-	public List<T> getCenters() {
-		return this.centers;
 	}
 
 }
