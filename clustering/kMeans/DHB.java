@@ -61,9 +61,8 @@ public class DHB<T extends Pattern> extends KMeansTypeAlgorithm<T> {
 	private float getAssignmentChangeCost(T pattern, int clusterId,
 			int clusterSize, boolean isAdd) {
 		int div = (isAdd) ? (clusterSize + 1) : (clusterSize - 1);
-		return clusterSize
-				* utils.getDistanceSquare(pattern, centers.get(clusterId))
-				/ div;
+		float cost = (float) clusterSize / div;
+		return cost * utils.getDistanceSquare(pattern, centers.get(clusterId));
 	}
 
 	/**
@@ -77,11 +76,11 @@ public class DHB<T extends Pattern> extends KMeansTypeAlgorithm<T> {
 
 		Set<Integer> fromClusterSet = clusters.get(fromCluster);
 		if (!fromClusterSet.remove(patternId)) {
-			System.err.println("err");
+			System.err.println("err DHB rmv"+patternId+" "+fromCluster);
 		}
 		Set<Integer> toClusterSet = clusters.get(toCluster);
 		if (!toClusterSet.add(patternId)) {
-			System.err.println("err");
+			 System.err.println("err DHB add"+patternId+" "+toCluster);
 		}
 		patternClusterMap.put(patternId, toCluster);
 

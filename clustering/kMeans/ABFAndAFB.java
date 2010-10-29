@@ -179,11 +179,10 @@ public class ABFAndAFB<T extends Pattern> extends KMeansTypeAlgorithm<T> {
 
 		Set<Integer> fromClusterSet = clusters.get(fromCluster);
 		if (!fromClusterSet.remove(patternId)) {
-			System.err.println("err");
+			//System.err.println("err");
 		}
 		Set<Integer> toClusterSet = clusters.get(toCluster);
 		if (!toClusterSet.add(patternId)) {
-			System.err.println("err");
 		}
 		patternClusterMap.put(patternId, toCluster);
 

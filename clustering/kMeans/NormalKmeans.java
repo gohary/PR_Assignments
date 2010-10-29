@@ -14,9 +14,11 @@ public class NormalKmeans<T extends Pattern> extends KMeansTypeAlgorithm<T> {
 	}
 
 	public void cluster() {
+
 		while (assignPatternsToClusters()) {
 			recalculateCenters();
 		}
+
 	}
 
 	private void recalculateCenters() {
@@ -44,17 +46,21 @@ public class NormalKmeans<T extends Pattern> extends KMeansTypeAlgorithm<T> {
 		boolean assignmentChanged = false;
 		int i = 0;
 		for (T pattern : patterns) {
+			// get its cluster
+			int currentCluster = patternClusterMap.get(i);
+			if (clusters.get(currentCluster).size() == 1) {
+				// Don't move that pattern
+				i++;
+				continue;
+			}
+
 			int nearestCenter = getNearestCenter(pattern);
 			if (clusters.get(nearestCenter).add(i)) {
-				if (!assignmentChanged) {
-					assignmentChanged = true;
-				}
+				assignmentChanged = true;
 				// removing from the previous cluster
-				Integer clusterId = patternClusterMap.get(i);
-				if (clusterId != null) {
-					if (!clusters.get(clusterId).remove(i)) {
-						System.err.println("err");
-					}
+
+				if (!clusters.get(currentCluster).remove(i)) {
+					System.err.println("err kmeans" + currentCluster + " " + i);
 				}
 
 				patternClusterMap.put(i, nearestCenter);

@@ -1,13 +1,7 @@
 package controller;
 
 import java.io.FileNotFoundException;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
-
-import kMeans.ABFAndAFB;
-import kMeans.ABFAndAFB.Alternating;
-import kMeans.NormalKmeans;
 
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.AxisLocation;
@@ -22,15 +16,15 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
 import utils.Pattern;
-import utils.fourDPoint.FourDPoint;
-import utils.fourDPoint.FourDPointUtils;
+import analytics.ClusteringAnalytics;
 import dataPrepration.BritishTownsLoader;
+import dataPrepration.DataSets;
 import dataPrepration.GermanTownsLoader;
 
 public class ChartCreator {
 
 	public JFreeChart createChart(int numClusters, int DHFRuns, int DHBRuns,
-			int dataSet, int numRuns) {
+			int dataSet, int numRuns) throws CloneNotSupportedException {
 
 		List<Pattern> patterns = null;
 		switch (dataSet) {
@@ -102,88 +96,57 @@ public class ChartCreator {
 	 * 
 	 * 
 	 * @return Series 1.
+	 * @throws CloneNotSupportedException 
 	 */
 
 	private XYDataset createDataset(int numClusters, int DHFRuns, int DHBRuns,
-			List<Pattern> patterns, int numRuns, int dataSet) {
+			List<Pattern> patterns, int numRuns, int dataSet) throws CloneNotSupportedException {
 
 		XYSeriesCollection collection = new XYSeriesCollection();
 
-		collection.addSeries(createKmeansDateSet(numClusters, patterns,
-				numRuns, dataSet));
+		XYSeries kmeans = new XYSeries("KMeans");
+		XYSeries dhb = new XYSeries("DHB");
+		XYSeries dhf = new XYSeries("BHF");
+		XYSeries abf = new XYSeries("ABF");
+		XYSeries afb = new XYSeries("AFB");
+		try {
+			DataSets ds = null;
+			switch (dataSet) {
+			case 1:
+				ds = DataSets.BRITICH_TOWNS;
+				break;
+			case 2:
+				ds = DataSets.GERMAN_TOWNS;
+				break;
+			case 3:
+				ds = DataSets.IRIS;
 
-		collection.addSeries(createAFBABFDateSet(true, numClusters, DHFRuns,
-				DHBRuns, patterns, numRuns, dataSet));
+			}
 
-		collection.addSeries(createAFBABFDateSet(false, numClusters, DHFRuns,
-				DHBRuns, patterns, numRuns, dataSet));
+			ClusteringAnalytics analytics = new ClusteringAnalytics(ds,
+					numClusters, DHFRuns, DHBRuns);
+
+			for (int i = 1; i <= numRuns; i++) {
+				analytics.next();
+				kmeans.add(i, analytics.getKMeansObj());
+				dhb.add(i, analytics.getDHBObj());
+				//dhf.add(i, analytics.getDHFObj());
+				//abf.add(i, analytics.getABFObj());
+				//afb.add(i, analytics.getAFBObj());
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			// TODO Handle
+		}
+
+		collection.addSeries(kmeans);
+		collection.addSeries(dhb);
+		collection.addSeries(dhf);
+		collection.addSeries(abf);
+		collection.addSeries(afb);
 
 		return collection;
 
-	}
-
-	private XYSeries createKmeansDateSet(int numClusters,
-			List<Pattern> patterns, int numRuns, int dataSet) {
-		XYSeries kmeansResults = new XYSeries("KMeans");
-
-		if (dataSet == 1 || dataSet == 2) {
-			NormalKmeans<FourDPoint> kmeans = new NormalKmeans<FourDPoint>();
-			List<FourDPoint> britishTowns = Arrays.asList(patterns
-					.toArray(new FourDPoint[] {}));
-			FourDPointUtils utils = new FourDPointUtils();
-			kmeans.setPatternUtils(utils);
-			for (int i = 1; i <= numRuns; i++) {
-
-				List<Set<Integer>> result = kmeans.cluster(britishTowns,
-						numClusters);
-				List<FourDPoint> centers = kmeans.getCenters();
-				float objectiveFundtion = utils.calculateObjectiveFunction(
-						britishTowns, result, centers);
-				kmeansResults.add(i, objectiveFundtion);
-
-			}
-		}
-
-		return kmeansResults;
-	}
-
-	private XYSeries createAFBABFDateSet(boolean isAFB, int numClusters,
-			int DHFRuns, int DHBRuns, List<Pattern> patterns, int numRuns,
-			int dataSet) {
-		XYSeries abf = new XYSeries((isAFB) ? "AFB" : "ABF");
-		if (dataSet == 1 || dataSet == 2) {
-			ABFAndAFB<FourDPoint> abfAndAFB = new ABFAndAFB<FourDPoint>(
-					(isAFB) ? Alternating.DHF : Alternating.DHB, DHFRuns,
-					DHBRuns);
-
-			List<FourDPoint> britishTowns = Arrays.asList(patterns
-					.toArray(new FourDPoint[] {}));
-			FourDPointUtils utils = new FourDPointUtils();
-			abfAndAFB.setPatternUtils(utils);
-			for (int i = 1; i <= numRuns; i++) {
-
-				List<Set<Integer>> result = abfAndAFB.cluster(britishTowns,
-						numClusters);
-				List<FourDPoint> centers = abfAndAFB.getCenters();
-				float objectiveFundtion = utils.calculateObjectiveFunction(
-						britishTowns, result, centers);
-
-				// if (objectiveFundtion > 270) {
-				// for (Set<Integer> cluster : result) {
-				// System.out.println("-------------------------");
-				// for (int j : cluster) {
-				// System.out.print(j + ", ");
-				// }
-				//
-				// }
-				// }
-				//
-				abf.add(i, objectiveFundtion);
-
-			}
-		}
-
-		return abf;
 	}
 
 }

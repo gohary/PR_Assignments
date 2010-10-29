@@ -31,15 +31,19 @@ public class PlotActionListener implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent action) {
 
-		JFreeChart chart = chartCreator.createChart(
-				optionsPan.getNumClusters(), optionsPan.getDHFRuns(),
-				optionsPan.getDHBRuns(), optionsPan.getDataSet(),
-				optionsPan.getNumRuns());
+		JFreeChart chart;
+		try {
+			chart = chartCreator.createChart(optionsPan.getNumClusters(),
+					optionsPan.getDHFRuns(), optionsPan.getDHBRuns(),
+					optionsPan.getDataSet(), optionsPan.getNumRuns());
+			final ChartPanel panel = new ChartPanel(chart, true, true, true,
+					false, true);
 
-		final ChartPanel panel = new ChartPanel(chart, true, true, true, false,
-				true);
+			charPainter.showChart(panel);
 
-		charPainter.showChart(panel);
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
+		}
 
 	}
 

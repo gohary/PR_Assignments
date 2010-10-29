@@ -60,4 +60,13 @@ public class FourDPoint extends Pattern {
 		d4 = ds[3];
 	}
 
+	@Override
+	public FourDPoint clone() throws CloneNotSupportedException {
+		return new FourDPoint(d1, d2, d3, d4);
+	}
+
+	@Override
+	public String toString() {
+		return "[" + d1 + "," + d2 + ", " + d3 + ", " + d4 + "]";
+	}
 }

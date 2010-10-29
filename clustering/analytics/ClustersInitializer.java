@@ -9,7 +9,6 @@ import java.util.Random;
 import java.util.Set;
 
 import utils.Pattern;
-import utils.Point2D.Point2D;
 
 public class ClustersInitializer {
 
@@ -39,8 +38,9 @@ public class ClustersInitializer {
 		}
 
 		// Handle Empty Clusters
-
+		int i = -1;
 		for (Set<Integer> cluster : clusters) {
+			i++;
 			if (cluster.size() == 0) {
 				/*
 				 * selecting a random pattern and move it to this cluster and
@@ -55,6 +55,7 @@ public class ClustersInitializer {
 
 					clusters.get(orignalCluster).remove(randPattern);
 					cluster.add(randPattern);
+					patternClusterMap.put(randPattern, i);
 					break;
 				} while (true);
 
@@ -71,24 +72,4 @@ public class ClustersInitializer {
 		return patternClusterMap;
 	}
 
-	public static void main(String[] args) {
-		List<Point2D> points = new ArrayList<Point2D>();
-		points.add(new Point2D(2, 3));
-		points.add(new Point2D(5, 8));
-		points.add(new Point2D(21, 2));
-		points.add(new Point2D(9, 7));
-		points.add(new Point2D(3, 0));
-		points.add(new Point2D(8, 6));
-		points.add(new Point2D(9, 7));
-		points.add(new Point2D(13, 3));
-		points.add(new Point2D(20, 33));
-		ClustersInitializer ini = new ClustersInitializer(4);
-		ini.initClusters(points);
-		List<Set<Integer>> cs = ini.getClusters();
-		for (Set<Integer> c : cs) {
-			if (c.size() == 0) {
-				System.out.println("err");
-			}
-		}
-	}
 }

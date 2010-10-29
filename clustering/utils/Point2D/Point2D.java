@@ -31,4 +31,10 @@ public class Point2D extends Pattern {
 	public String toString() {
 		return d1 + " " + d2;
 	}
+
+	@Override
+	public Point2D clone() throws CloneNotSupportedException {
+
+		return new Point2D(d1, d2);
+	}
 }

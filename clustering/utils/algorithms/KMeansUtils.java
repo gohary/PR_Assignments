@@ -23,4 +23,5 @@ public abstract class KMeansUtils<T extends Pattern> extends PatternUtils<T> {
 		}
 		return objectiveFunction;
 	}
+
 }
