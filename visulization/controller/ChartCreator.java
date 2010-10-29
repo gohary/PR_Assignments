@@ -1,7 +1,7 @@
 package controller;
 
+
 import java.io.FileNotFoundException;
-import java.util.List;
 
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.AxisLocation;
@@ -15,48 +15,16 @@ import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
-import utils.Pattern;
 import analytics.ClusteringAnalytics;
-import dataPrepration.BritishTownsLoader;
 import dataPrepration.DataSets;
-import dataPrepration.GermanTownsLoader;
 
 public class ChartCreator {
 
 	public JFreeChart createChart(int numClusters, int DHFRuns, int DHBRuns,
 			int dataSet, int numRuns) throws CloneNotSupportedException {
 
-		List<Pattern> patterns = null;
-		switch (dataSet) {
-		case 1:
-			// British Towns
-			BritishTownsLoader britishLoader = new BritishTownsLoader();
-			try {
-				britishLoader.load();
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-				return null;
-			}
-			patterns = britishLoader.getPatterns();
-			break;
-		case 2:
-			// German Towns
-
-			GermanTownsLoader germanLoader = new GermanTownsLoader();
-			try {
-				germanLoader.load();
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-				return null;
-			}
-			patterns = germanLoader.getPatterns();
-			break;
-		default:
-			return null;
-		}
-
 		final XYDataset data = createDataset(numClusters, DHFRuns, DHBRuns,
-				patterns, numRuns, dataSet);
+				numRuns, dataSet);
 
 		final XYItemRenderer renderer1 = new StandardXYItemRenderer();
 
@@ -81,7 +49,7 @@ public class ChartCreator {
 
 		// return a new chart containing the overlaid plot…
 
-		String title = ((dataSet == 1) ? "British Towns " : "German Towns ")
+		String title = ((dataSet == 1) ? "British Towns " : "IRIS ")
 				+ numClusters + " Clusters";
 		return new JFreeChart(title,
 
@@ -96,11 +64,11 @@ public class ChartCreator {
 	 * 
 	 * 
 	 * @return Series 1.
-	 * @throws CloneNotSupportedException 
+	 * @throws CloneNotSupportedException
 	 */
 
 	private XYDataset createDataset(int numClusters, int DHFRuns, int DHBRuns,
-			List<Pattern> patterns, int numRuns, int dataSet) throws CloneNotSupportedException {
+			int numRuns, int dataSet) throws CloneNotSupportedException {
 
 		XYSeriesCollection collection = new XYSeriesCollection();
 
@@ -130,15 +98,14 @@ public class ChartCreator {
 				analytics.next();
 				kmeans.add(i, analytics.getKMeansObj());
 				dhb.add(i, analytics.getDHBObj());
-				//dhf.add(i, analytics.getDHFObj());
-				//abf.add(i, analytics.getABFObj());
-				//afb.add(i, analytics.getAFBObj());
+				dhf.add(i, analytics.getDHFObj());
+				abf.add(i, analytics.getABFObj());
+				afb.add(i, analytics.getAFBObj());
 			}
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 			// TODO Handle
 		}
-
 		collection.addSeries(kmeans);
 		collection.addSeries(dhb);
 		collection.addSeries(dhf);

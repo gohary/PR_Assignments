@@ -99,7 +99,8 @@ public class Visualizer extends ApplicationFrame{
 	public static void main(String[] args) {
 		Visualizer v = new Visualizer("Test");
 		PointReader reader = new PointReader();
-		HashMap<String, List<Pattern>> dataSet = reader.read("dat/rs1_afb"); 
+		HashMap<String, List<Pattern>> dataSet = reader.read("data/rs2_kmeans");
+		//gaussianClose.txt
 		v.visualize(dataSet, false);
 	}
 	

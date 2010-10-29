@@ -15,6 +15,11 @@ public class DHB<T extends Pattern> extends KMeansTypeAlgorithm<T> {
 	public void cluster() {
 		while (doDHBIteration()) {
 		}
+
+		for (Set<Integer> c : clusters) {
+			System.out.print(c.size()+", ");
+		}
+		System.out.println();
 	}
 
 	private boolean doDHBIteration() {

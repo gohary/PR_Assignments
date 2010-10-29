@@ -9,13 +9,13 @@ import java.util.Scanner;
 import utils.Pattern;
 import utils.fourDPoint.FourDPoint;
 
-public class GermanTownsLoader {
+public class IRISLoader {
 
 	private int numCluster;
 	private List<Pattern> patterns;
 	private int numPatterns;
 
-	public void load() throws FileNotFoundException {
+	public List<Pattern>  load() throws FileNotFoundException {
 		Scanner sc = new Scanner(new File("data/GermanTowns.in"));
 		numCluster = sc.nextInt();
 		numPatterns = sc.nextInt();
@@ -27,6 +27,7 @@ public class GermanTownsLoader {
 			patternsCount++;
 		}
 		sc.close();
+		return patterns;
 
 	}
 

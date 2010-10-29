@@ -30,7 +30,6 @@ public class DHF<T extends Pattern> extends KMeansTypeAlgorithm<T> {
 
 			float removeCost = getAssignmentChangeCost(pattern, currentCluster,
 					currentClusterSize, false);
-			float minCost = removeCost;
 
 			int bestMoveCluster = currentCluster;
 
@@ -40,14 +39,14 @@ public class DHF<T extends Pattern> extends KMeansTypeAlgorithm<T> {
 				}
 				float addCost = getAssignmentChangeCost(pattern, j, clusters
 						.get(j).size(), true);
-				if (addCost < minCost) {
-					minCost = addCost;
+				if (addCost < removeCost) {
+
 					bestMoveCluster = j;
-					// TODO BREAK THE LOOP
+					break;
 				}
 
 			}
-			if (minCost < removeCost) {
+			if (bestMoveCluster != currentCluster) {
 				assignmnetChanged = true;
 				// reassign & update the centroids
 				reassign(i, currentCluster, bestMoveCluster);
@@ -62,9 +61,8 @@ public class DHF<T extends Pattern> extends KMeansTypeAlgorithm<T> {
 	private float getAssignmentChangeCost(T pattern, int clusterId,
 			int clusterSize, boolean isAdd) {
 		int div = (isAdd) ? (clusterSize + 1) : (clusterSize - 1);
-		return clusterSize
-				* utils.getDistanceSquare(pattern, centers.get(clusterId))
-				/ div;
+		float cost = (float) clusterSize / div;
+		return cost * utils.getDistanceSquare(pattern, centers.get(clusterId));
 	}
 
 	/**
@@ -78,11 +76,11 @@ public class DHF<T extends Pattern> extends KMeansTypeAlgorithm<T> {
 
 		Set<Integer> fromClusterSet = clusters.get(fromCluster);
 		if (!fromClusterSet.remove(patternId)) {
-		//	System.err.println("err");
+			System.err.println("err DHB rmv" + patternId + " " + fromCluster);
 		}
 		Set<Integer> toClusterSet = clusters.get(toCluster);
 		if (!toClusterSet.add(patternId)) {
-		//	System.err.println("err");
+			System.err.println("err DHB add" + patternId + " " + toCluster);
 		}
 		patternClusterMap.put(patternId, toCluster);
 

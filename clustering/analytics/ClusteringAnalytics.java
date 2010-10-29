@@ -1,5 +1,6 @@
 package analytics;
 
+
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,6 +21,7 @@ import utils.fourDPoint.FourDPoint;
 import utils.fourDPoint.FourDPointUtils;
 import dataPrepration.BritishTownsLoader;
 import dataPrepration.DataSets;
+import dataPrepration.IRISLoader;
 
 //TODO FIX THE GENERICS
 
@@ -35,7 +37,7 @@ public class ClusteringAnalytics {
 	@SuppressWarnings("rawtypes")
 	private KMeansUtils utils;
 
-	private final static int NUM_ALGORITHMS = 2;
+	private final static int NUM_ALGORITHMS = 5;
 
 	@SuppressWarnings("rawtypes")
 	private List patterns;
@@ -43,10 +45,13 @@ public class ClusteringAnalytics {
 	@SuppressWarnings("rawtypes")
 	List centers;
 
+	private int numClusters;
+
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public ClusteringAnalytics(DataSets dataSet, int numClusters, int dhfRuns,
 			int dhbRuns) throws FileNotFoundException {
 		initializer = new ClustersInitializer(numClusters);
+		this.numClusters = numClusters;
 		objFunctions = new float[NUM_ALGORITHMS];
 		centers = new ArrayList();
 		for (int j = 0; j < numClusters; j++) {
@@ -55,37 +60,40 @@ public class ClusteringAnalytics {
 		switch (dataSet) {
 		case BRITICH_TOWNS:
 			patterns = new BritishTownsLoader().load();
-			utils = new FourDPointUtils();
-			algorithms = new ArrayList<KMeansTypeAlgorithm>(NUM_ALGORITHMS);
-
-			algorithms.add(new NormalKmeans<FourDPoint>(numClusters, patterns,
-					utils));
-
-			
-			algorithms.add(new DHB<FourDPoint>(numClusters, patterns, utils));
-			
-			//algorithms.add(new DHF<FourDPoint>(numClusters, patterns, utils));
-
-			
-			//algorithms.add(new ABFAndAFB(Alternating.DHB, dhfRuns, dhbRuns,
-				//	numClusters, patterns, utils));
-
-			//algorithms.add(new ABFAndAFB(Alternating.DHF, dhfRuns, dhbRuns,
-				//	numClusters, patterns, utils));
-
+			break;
+		case IRIS:
+			patterns = new IRISLoader().load();
 			break;
 		}
+		utils = new FourDPointUtils();
+		algorithms = new ArrayList<KMeansTypeAlgorithm>(NUM_ALGORITHMS);
+
+		algorithms.add(new NormalKmeans<FourDPoint>(numClusters, patterns,
+				utils));
+
+		algorithms.add(new DHB<FourDPoint>(numClusters, patterns, utils));
+
+		algorithms.add(new DHF<FourDPoint>(numClusters, patterns, utils));
+
+		algorithms.add(new ABFAndAFB(Alternating.DHB, dhfRuns, dhbRuns,
+				numClusters, patterns, utils));
+
+		algorithms.add(new ABFAndAFB(Alternating.DHF, dhfRuns, dhbRuns,
+				numClusters, patterns, utils));
+
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void next() throws CloneNotSupportedException {
-
-		initializer.initClusters(patterns);
+		if (numClusters < 7) {
+			initializer.initClusters1(patterns);
+		} else {
+			initializer.initClusters1(patterns);
+		}
 		List<Set<Integer>> clusters = initializer.getClusters();
 		List centers = calculateCenters(clusters);
 		Map<Integer, Integer> patternClusterMap = initializer
 				.getPatternClusterMap();
-
 
 		int i = 0;
 		for (KMeansTypeAlgorithm algorithm : algorithms) {
@@ -169,7 +177,7 @@ public class ClusteringAnalytics {
 	public static void main(String[] args) throws FileNotFoundException,
 			CloneNotSupportedException {
 		ClusteringAnalytics an = new ClusteringAnalytics(
-				DataSets.BRITICH_TOWNS, 10, 1, 1);
+				DataSets.IRIS, 10, 1, 1);
 		an.next();
 		System.out.println(an.getKMeansObj() + "," + an.getDHBObj() + ", "
 				+ an.getDHFObj() + ", " + an.getABFObj() + ", "

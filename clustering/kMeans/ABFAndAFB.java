@@ -78,7 +78,6 @@ public class ABFAndAFB<T extends Pattern> extends KMeansTypeAlgorithm<T> {
 	}
 
 	private boolean doDHFIteration() {
-		// System.out.println("FFFFFFF");
 		boolean assignmnetChanged = false;
 		int i = 0;
 		for (T pattern : patterns) {
@@ -101,6 +100,7 @@ public class ABFAndAFB<T extends Pattern> extends KMeansTypeAlgorithm<T> {
 				float addCost = getAssignmentChangeCost(pattern, j, clusters
 						.get(j).size(), true);
 				if (addCost < removeCost) {
+
 					bestMoveCluster = j;
 					break;
 				}
@@ -119,7 +119,6 @@ public class ABFAndAFB<T extends Pattern> extends KMeansTypeAlgorithm<T> {
 	}
 
 	private boolean doDHBIteration() {
-		// System.out.println("BBBBBBBBBBBBB");
 		boolean assignmnetChanged = false;
 		int i = 0;
 		for (T pattern : patterns) {
@@ -163,10 +162,10 @@ public class ABFAndAFB<T extends Pattern> extends KMeansTypeAlgorithm<T> {
 	private float getAssignmentChangeCost(T pattern, int clusterId,
 			int clusterSize, boolean isAdd) {
 		int div = (isAdd) ? (clusterSize + 1) : (clusterSize - 1);
-		return clusterSize
-				* utils.getDistanceSquare(pattern, centers.get(clusterId))
-				/ div;
+		float cost = (float) clusterSize / div;
+		return cost * utils.getDistanceSquare(pattern, centers.get(clusterId));
 	}
+
 
 	/**
 	 * reassign the pattern & update the centroids
@@ -179,7 +178,7 @@ public class ABFAndAFB<T extends Pattern> extends KMeansTypeAlgorithm<T> {
 
 		Set<Integer> fromClusterSet = clusters.get(fromCluster);
 		if (!fromClusterSet.remove(patternId)) {
-			//System.err.println("err");
+			// System.err.println("err");
 		}
 		Set<Integer> toClusterSet = clusters.get(toCluster);
 		if (!toClusterSet.add(patternId)) {

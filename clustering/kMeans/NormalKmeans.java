@@ -17,6 +17,7 @@ public class NormalKmeans<T extends Pattern> extends KMeansTypeAlgorithm<T> {
 
 		while (assignPatternsToClusters()) {
 			recalculateCenters();
+
 		}
 
 	}
@@ -85,5 +86,4 @@ public class NormalKmeans<T extends Pattern> extends KMeansTypeAlgorithm<T> {
 		}
 		return minCenter;
 	}
-
 }

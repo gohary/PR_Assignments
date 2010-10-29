@@ -44,7 +44,7 @@ public class OptionsPan extends JPanel {
 
 		add(new JLabel("DataSet"));
 		dataSetComboF = new JComboBox(new String[] { "--", "British Towns",
-				"German Towns" });
+				"German Towns", "IRIS" });
 		add(dataSetComboF);
 		runButton = new JButton("Run");
 		add(runButton);
