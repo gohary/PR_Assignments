@@ -69,9 +69,11 @@ public class ClustersInitializer {
 		}
 	}
 
+	public List centers;
+
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void initClusters2(List<? extends Pattern> patterns) {
-		List centers = new ArrayList();
+		centers = new ArrayList();
 		int numPatterns = patterns.size();
 		clusters = new ArrayList<Set<Integer>>();
 		for (int i = 0; i < numClusters; i++) {

@@ -18,14 +18,14 @@ import utils.fourDPoint.FourDPoint;
 public class BritishTownsLoader {
 
 	private int numCluster;
-	private List<Pattern> patterns;
+	private List<FourDPoint> patterns;
 	private int numPatterns;
 
-	public List<Pattern> load() throws FileNotFoundException {
+	public List<FourDPoint> load() throws FileNotFoundException {
 		Scanner sc = new Scanner(new File("data/BritishTowns.txt"));
 		numCluster = sc.nextInt();
 		numPatterns = sc.nextInt();
-		patterns = new ArrayList<Pattern>();
+		patterns = new ArrayList<FourDPoint>();
 		int patternsCount = 0;
 		while (patternsCount < numPatterns) {
 			patterns.add(new FourDPoint(sc.nextFloat(), sc.nextFloat(), sc
@@ -40,7 +40,7 @@ public class BritishTownsLoader {
 		return this.numCluster;
 	}
 
-	public List<Pattern> getPatterns() {
+	public List<FourDPoint> getPatterns() {
 		return this.patterns;
 	}
 

@@ -1,6 +1,5 @@
 package analytics;
 
-
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -86,12 +85,12 @@ public class ClusteringAnalytics {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void next() throws CloneNotSupportedException {
 		if (numClusters < 7) {
-			initializer.initClusters1(patterns);
+			initializer.initClusters2(patterns);
 		} else {
-			initializer.initClusters1(patterns);
+			initializer.initClusters2(patterns);
 		}
 		List<Set<Integer>> clusters = initializer.getClusters();
-		List centers = calculateCenters(clusters);
+		List centers = initializer.centers;//calculateCenters(clusters);
 		Map<Integer, Integer> patternClusterMap = initializer
 				.getPatternClusterMap();
 
@@ -174,19 +173,4 @@ public class ClusteringAnalytics {
 		return objFunctions[4];
 	}
 
-	public static void main(String[] args) throws FileNotFoundException,
-			CloneNotSupportedException {
-		ClusteringAnalytics an = new ClusteringAnalytics(
-				DataSets.IRIS, 10, 1, 1);
-		an.next();
-		System.out.println(an.getKMeansObj() + "," + an.getDHBObj() + ", "
-				+ an.getDHFObj() + ", " + an.getABFObj() + ", "
-				+ an.getABFObj());
-
-		an.next();
-		System.out.println(an.getKMeansObj() + "," + an.getDHBObj() + ", "
-				+ an.getDHFObj() + ", " + an.getABFObj() + ", "
-				+ an.getABFObj());
-
-	}
 }
